@@ -1,9 +1,9 @@
 
 
-export const ImageGalleryItem = ({  tags, previewImg }) => (
+export const ImageGalleryItem = ({  tags, previewImg, id  }) => (
    
-        <li class="gallery-item">
-        <img src={previewImg} alt={tags } />
+    <li key={id} class="gallery-item">
+        <img src={previewImg} alt={tags} />
 </li>
 )
 
