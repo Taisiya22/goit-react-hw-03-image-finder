@@ -28,7 +28,7 @@ window.removeEventListener('keydown', this.handleKeyDown)
         return createPortal (
         <div onClick={this.handleBackdrop} className={css.overlay }>
     <div className={css.modal }>
-                    <img src={selectedImage } alt="" />
+                    <img src={selectedImage}  />
   </div>
  </div>, modalRoot
     )}

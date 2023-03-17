@@ -4,12 +4,14 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { imgApi } from './service/ApiService';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Modal } from './Modal/Modal';
+import { Loader } from './Loader/Loader';
 
 export class App extends Component {
   state = {
     searchQuery: '',
     images: [],
     selectedImage: null,
+    loadmore: false,
     page: 1,
     status: 'idle',
   };
@@ -39,24 +41,28 @@ export class App extends Component {
     }
   }
 
+  openModal = largeImageUrl => {
+    this.setState({ selectedImage: largeImageUrl });
+  };
   closeModal = () => {
-    this.setState({ selectedImage: null })
-    
-  }
-  
+    this.setState({ selectedImage: null });
+  };
 
   handleFormSubmit = searchQuery => {
     this.setState({ searchQuery });
   };
 
   render() {
-    const { selectedImage } = this.state;
+    const { selectedImage, status, images } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleFormSubmit} />
+        {status === 'pending' && <Loader />}
         <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
-        <ImageGallery images={this.state.images} />
-        {selectedImage && <Modal selectedImage={selectedImage} onClose={this.closeModal } />}
+        <ImageGallery images={images} openModal={this.openModal} />
+        {selectedImage && (
+          <Modal onClose={this.closeModal} selectedImage={selectedImage} />
+        )}
       </>
     );
   }
