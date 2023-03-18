@@ -13,7 +13,9 @@ export class App extends Component {
     selectedImage: null,
     loadMoreBtn: false,
     page: 1,
-    status: 'idle',
+    error: '',
+    isLoading: false,
+   
   };
   totalpage = null;
   async componentDidUpdate(_, prevState) {
@@ -23,7 +25,8 @@ export class App extends Component {
       // console.log(prevState.searchQuery);
       // console.log(this.state.searchQuery)
 
-      this.setState({ status: 'pending' });
+      
+      this.setState({isLoading: true})
       try {
         const responce = await imgApi(searchQuery, page);
         this.totalpage = responce.totalHits;
@@ -33,14 +36,20 @@ export class App extends Component {
             'No results were found for your search, please try something else.'
           );
         }
-
-        this.setState(prevState => ({
-          images: [...prevState.images, ...responce.hits],
-          status: 'resolved',
-          loadMore: this.state.page < this.totalpage / 12,
-        }));
-      } catch (error) {
+       
+          this.setState(prevState => ({
+            images: [...prevState.images, ...responce.hits],
+            
+            loadMore: this.state.page < this.totalpage / 12,
+          }));
         
+        
+      } catch (error) {
+        this.setState({ error, status: 'reject' })
+        toast.error(`Whoops, something went wrong: ${error.message}`)
+      }
+      finally { 
+        this.setState({isLoading: false})
       }
     }
   }
@@ -48,7 +57,7 @@ export class App extends Component {
   loadMore = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
-      status: 'pending',
+     
     }));
   };
 
@@ -66,8 +75,10 @@ export class App extends Component {
     }
   };
 
-  render() {
-    const { selectedImage, status, images, loadMore } = this.state;
+  
+
+ render() {
+    const { selectedImage, isLoading, images, loadMore } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleFormSubmit} />
@@ -77,7 +88,7 @@ export class App extends Component {
           <Modal onClose={this.closeModal} selectedImage={selectedImage} />
         )}
         {loadMore && <Button onClick={this.loadMore} />}
-        {status === 'pending' && <Loader />}
+        {isLoading && <Loader />}
         <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
       </>
     );
