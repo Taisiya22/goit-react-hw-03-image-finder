@@ -6,6 +6,7 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Modal } from './Modal/Modal';
 import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
+
 export class App extends Component {
   state = {
     searchQuery: '',
@@ -31,7 +32,7 @@ export class App extends Component {
         this.totalpage = responce.totalHits;
         // console.log(this.totalpage);
 
-        if (this.totalpage.length === 0) {
+        if (this.totalpage === 0) {
           this.setState({loadMoreBtn: false})
            toast.warning(
             'No results were found for your search, please try something else.'
@@ -47,9 +48,9 @@ export class App extends Component {
           loadMore: page < this.totalpage / 12,
         }));
 
-        if (page > this.totalpage / 12) { 
-toast.info('Were sorry, but you ve reached the end of search results.')
-        }
+        // if (page > this.totalpage / 12) { 
+        // toast.info('Were sorry, but you ve reached the end of search results.')
+        // }
       } catch (error) {
         this.setState({ error });
         toast.error(`Whoops, something went wrong: ${error.message}`);
