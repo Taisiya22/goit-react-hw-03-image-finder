@@ -6,17 +6,19 @@ import css from './Searchbar.module.css';
 
 export class Searchbar extends Component {
     state = {
-        searchQuery:'',
+        searchQuery: '',
+        
     }
-
+   
     onHandlerName = (e) => { 
         this.setState({ searchQuery: e.target.value.toLowerCase() })
     }
 
     handleSubmit = (e) => { 
         e.preventDefault();
+        
         if (!this.state.searchQuery.trim()) { 
-     toast.error("Entry name")
+     toast.error("PLease, fill search field.")
       return;
     }
         this.props.onSubmit(this.state.searchQuery)

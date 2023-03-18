@@ -15,7 +15,7 @@ export class App extends Component {
     page: 1,
     error: '',
     isLoading: false,
-   
+    
   };
   totalpage = null;
   async componentDidUpdate(_, prevState) {
@@ -25,31 +25,36 @@ export class App extends Component {
       // console.log(prevState.searchQuery);
       // console.log(this.state.searchQuery)
 
-      
-      this.setState({isLoading: true})
+      this.setState({ isLoading: true });
       try {
         const responce = await imgApi(searchQuery, page);
         this.totalpage = responce.totalHits;
         console.log(this.totalpage);
-        if (this.totalpage === 0) {
-          toast.warning(
+
+        if (this.totalpage.length === 0) {
+          this.setState({loadMoreBtn: false})
+           toast.warning(
             'No results were found for your search, please try something else.'
           );
+          return;
         }
-       
-          this.setState(prevState => ({
-            images: [...prevState.images, ...responce.hits],
-            
-            loadMore: this.state.page < this.totalpage / 12,
-          }));
+         if (this.state.page === 1 && this.totalpage !== 0) { 
+          toast.success(`Hooray! We found ${this.totalpage} images.`);
+        }
         
-        
+        this.setState(prevState => ({
+          images: [...prevState.images, ...responce.hits],
+          loadMore: page < this.totalpage / 12,
+        }));
+
+        if (page > this.totalpage / 12) { 
+toast.info('Were sorry, but you ve reached the end of search results.')
+        }
       } catch (error) {
-        this.setState({ error, status: 'reject' })
-        toast.error(`Whoops, something went wrong: ${error.message}`)
-      }
-      finally { 
-        this.setState({isLoading: false})
+        this.setState({ error, status: 'reject' });
+        toast.error(`Whoops, something went wrong: ${error.message}`);
+      } finally {
+        this.setState({ isLoading: false });
       }
     }
   }
@@ -57,7 +62,7 @@ export class App extends Component {
   loadMore = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
-     
+      isLoading: true,
     }));
   };
 
@@ -75,20 +80,19 @@ export class App extends Component {
     }
   };
 
-  
-
- render() {
+  render() {
     const { selectedImage, isLoading, images, loadMore } = this.state;
     return (
       <>
-        <Searchbar onSubmit={this.handleFormSubmit} />
-
-        <ImageGallery images={images} openModal={this.openModal} />
+        <Searchbar onSubmit={this.handleFormSubmit} totalpage={this.totalpage } />
+        {images.length > 0 && (
+          <ImageGallery images={images} openModal={this.openModal} />
+        )}
         {selectedImage && (
           <Modal onClose={this.closeModal} selectedImage={selectedImage} />
         )}
-        {loadMore && <Button onClick={this.loadMore} />}
         {isLoading && <Loader />}
+        {loadMore && <Button onClick={this.loadMore} />}
         <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
       </>
     );
