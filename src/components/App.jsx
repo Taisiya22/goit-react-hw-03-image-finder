@@ -15,7 +15,7 @@ export class App extends Component {
     page: 1,
     error: '',
     isLoading: false,
-    
+    alt: null
   };
   totalpage = null;
   async componentDidUpdate(_, prevState) {
@@ -29,7 +29,7 @@ export class App extends Component {
       try {
         const responce = await imgApi(searchQuery, page);
         this.totalpage = responce.totalHits;
-        console.log(this.totalpage);
+        // console.log(this.totalpage);
 
         if (this.totalpage.length === 0) {
           this.setState({loadMoreBtn: false})
@@ -51,7 +51,7 @@ export class App extends Component {
 toast.info('Were sorry, but you ve reached the end of search results.')
         }
       } catch (error) {
-        this.setState({ error, status: 'reject' });
+        this.setState({ error });
         toast.error(`Whoops, something went wrong: ${error.message}`);
       } finally {
         this.setState({ isLoading: false });
@@ -66,8 +66,8 @@ toast.info('Were sorry, but you ve reached the end of search results.')
     }));
   };
 
-  openModal = largeImageUrl => {
-    this.setState({ selectedImage: largeImageUrl });
+  openModal = (largeImageUrl, tags) => {
+    this.setState({ selectedImage: largeImageUrl, alt: tags });
   };
   closeModal = () => {
     this.setState({ selectedImage: null });
@@ -89,7 +89,7 @@ toast.info('Were sorry, but you ve reached the end of search results.')
           <ImageGallery images={images} openModal={this.openModal} />
         )}
         {selectedImage && (
-          <Modal onClose={this.closeModal} selectedImage={selectedImage} />
+          <Modal onClose={this.closeModal} selectedImage={selectedImage} alt={this.tags } />
         )}
         {isLoading && <Loader />}
         {loadMore && <Button onClick={this.loadMore} />}

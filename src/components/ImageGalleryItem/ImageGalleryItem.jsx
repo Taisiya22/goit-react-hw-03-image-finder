@@ -1,4 +1,5 @@
-import css from './ImageGalleryItem.module.css'
+import PropTypes from 'prop-types';
+import css from './ImageGalleryItem.module.css';
 
 export const ImageGalleryItem = ({  tags, previewImg, id, openModal  }) => (
    
@@ -7,5 +8,10 @@ export const ImageGalleryItem = ({  tags, previewImg, id, openModal  }) => (
 </li>
 )
 
-
+ImageGalleryItem.propTypes = {
+    tags: PropTypes.string,
+    previewImg: PropTypes.string,
+    id: PropTypes.string,
+    openModal:PropTypes.func.isRequired,
+}
 
