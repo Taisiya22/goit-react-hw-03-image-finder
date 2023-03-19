@@ -5,11 +5,11 @@ import { createPortal } from 'react-dom';
 
 const modalRoot = document.getElementById('modal-root');
 export class Modal extends Component {
-    static propTypes = {
-        selectedImage: PropTypes.string.isRequired,
-        onClose: PropTypes.func.isRequired,
-    }
-   
+  static propTypes = {
+    selectedImage: PropTypes.string.isRequired,
+    onClose: PropTypes.func.isRequired,
+  };
+
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
   }
@@ -34,7 +34,7 @@ export class Modal extends Component {
     return createPortal(
       <div onClick={this.handleBackdrop} className={css.overlay}>
         <div className={css.modal}>
-                <img src={selectedImage} alt={tags } />
+          <img src={selectedImage} alt={tags} />
         </div>
       </div>,
       modalRoot
